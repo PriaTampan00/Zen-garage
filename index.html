@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zen Garage</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -14,34 +13,87 @@
       rel="stylesheet"
     />
 
-    <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 
-    <!-- Style -->
     <link rel="stylesheet" href="css/style.css" />
+
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <script src="src/app.js"></script>
   </head>
 
   <body>
-    <!-- Navbar start -->
-    <nav class="navbar">
+    <nav class="navbar" x-data=>
       <a href="#" class="navbar-logo">Zen<span>garage</span>.</a>
 
       <div class="navbar-nav">
         <a href="#home">Home</a>
         <a href="#about">Tentang Kami</a>
-        <a href="#produk">Produk</a>
+        <a href="#shop">Shop</a>
+        <a href="#products">Produk</a>
         <a href="#contact">Kontak</a>
       </div>
 
       <div class="navbar-extra">
-        <a href="#" id="search"><i data-feather="search"></i></a>
-        <a href="#" id="shopping-cart"><i data-feather="shopping-cart"></i></a>
+        <a href="#" id="search-button"><i data-feather="search"></i></a>
+        <a href="#" id="shopping-cart-button">
+          <i data-feather="shopping-cart"></i>
+          <span class="quantity-badge" x-show="$store.cart.quantity" x-text="$store.cart.quantity"></span>
+        </a>
         <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
       </div>
-    </nav>
-    <!-- Navbar end -->
 
-    <!-- Hero section start-->
+      <div class="search-form">
+        <input type="search" id="search-box" placeholder="search here..." />
+        <label for="search-box"><i data-feather="search"></i></label>
+      </div>
+
+      <div class="shopping-cart">
+        <template x-for="(item, index) in $store.cart.items" x-keys="index">
+          <div class="cart-item">
+            <img :src="`img/katalog/${item.img}`" :alt="item.name" />
+            <div class="item-detail">
+              <h3 x-text="item.name"></h3>
+              <div class="item-price">
+                <span x-text="rupiah(item.price)"></span> &times;
+                <button id="remove" @click="$store.cart.remove(item.id)">&minus;</button>
+                <span x-text="item.quantity"></span>
+                <button id="add" @click="$store.cart.add(item)">&plus;</button> &equals;
+                <span x-text="rupiah(item.total)"></span>
+              </div>
+            </div>
+          </div>
+        </template>
+        <h4 x-show="!$store.cart.items.length" style="margin-top: 1rem;">Cart is Empty</h4>
+        <h4 x-show="$store.cart.items.length">Total : <span x-text="rupiah($store.cart.total)"></span></h4>
+
+        <div class="form-container" x-show="$store.cart.items.length">
+          <form action="" id="checkoutForm">
+            <h5>Customer Detail</h5>
+            <label for="name">
+              <span>Name</span>
+              <input type="text" name="name" id="name">
+            </label>
+
+            <label for="email">
+              <span>Email</span>
+              <input type="email" name="email" id="email">
+            </label>
+
+            <label for="phone">
+              <span>Phone</span>
+              <input type="number" name="phone" id="phone" autocomplete="off">
+            </label>
+
+            <button class="checkout-button" type="submit" id="checkout-button" value="checkout">Checkout</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+
     <section class="hero" id="home">
       <main class="content">
         <h1>Upgrade Pengalaman <span>Berkendara</span> Anda</h1>
@@ -52,15 +104,13 @@
         <a href="#" class="cta">Beli Sekarang</a>
       </main>
     </section>
-    <!-- Hero section end-->
 
-    <!-- about section start -->
     <section id="about" class="about">
       <h2><span>Tentang</span> Kami</h2>
 
       <div class="row">
         <div class="about-img">
-          <img src="img/tentang-kami.jpg" alt="Tentang Kami" />
+          <img src="img/tentang-kami2.jpg" alt="Tentang Kami" />
         </div>
         <div class="content">
           <h3>Mengapa kami ada?</h3>
@@ -76,42 +126,88 @@
         </div>
       </div>
     </section>
-    <!-- about section end -->
 
-    <!-- Produk section start -->
-    <section id="produk" class="produk">
-      <h2><span>Produk</span> Kami</h2>
+    <section id="shop" class="shop">
+      <h2><span>Shop</span> Now!</h2>
       <p>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure corporis
         laborum amet in, sunt totam!
       </p>
-
+    
       <div class="row">
-        <div class="produk-card">
-          <img src="img/produk/5.jpg" alt="Helmet" class="produk-card-img" />
-          <h3 class="produk-card-tittle">- Helmet -</h3>
-          <p class="produk-card-price">IDR 9.500.000</p>
+        <div class="shop-card">
+          <img src="img/katalog1/helmet.jpg" alt="Helmet" class="shop-card-img" />
+          <a href="#">HELMET</a>
         </div>
-        <div class="produk-card">
-          <img src="img/produk/5.jpg" alt="Helmet" class="produk-card-img" />
-          <h3 class="produk-card-tittle">- Helmet -</h3>
-          <p class="produk-card-price">IDR 9.500.000</p>
+        <div class="shop-card">
+          <img src="img/katalog1/apparel.jpg" alt="Helmet" class="shop-card-img" />
+          <a href="#">APPAREL</a>
         </div>
-        <div class="produk-card">
-          <img src="img/produk/5.jpg" alt="Helmet" class="produk-card-img" />
-          <h3 class="produk-card-tittle">- Helmet -</h3>
-          <p class="produk-card-price">IDR 9.500.000</p>
+        <div class="shop-card">
+          <img src="img/katalog1/motorbike.jpg" alt="Helmet" class="shop-card-img" />
+          <a href="#">MOTORBIKE</a>
         </div>
-        <div class="produk-card">
-          <img src="img/produk/5.jpg" alt="Helmet" class="produk-card-img" />
-          <h3 class="produk-card-tittle">- Helmet -</h3>
-          <p class="produk-card-price">IDR 9.500.000</p>
+        <div class="shop-card">
+          <img src="img/katalog1/parts.jpg" alt="Helmet" class="shop-card-img" />
+          <a href="#">PARTS</a>
         </div>
       </div>
     </section>
-    <!-- Produk section end -->
-
-    <!-- Contact Section start -->
+    
+    <section class="products" id="products" x-data="products">
+      <h2><span>Produk Unggulan</span> Kami</h2>
+      <p>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eveniet omnis
+        unde obcaecati eos tempore est.
+      </p>
+    
+      <div class="row">
+        <template x-for="(item, index) in items" x-key="index">
+          <div class="product-card">
+            <div class="product-image">
+              <img :src="`img/katalog/${item.img}`" :alt="item.name" />
+            </div>
+            <div class="product-content">
+              <div class="product-name-row">
+                <a href="#" class="item-detail-button">
+                  <svg
+                    width="20"
+                    height="20"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <use href="img/feather-sprite.svg#eye" />
+                  </svg>
+                </a>
+                <h3 x-text="item.name"></h3>
+              </div>
+              <div class="product-price-row">
+                <a href="#" @click.prevent="$store.cart.add(item)" class="cart-button">
+                  <svg
+                    width="20"
+                    height="20"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <use href="img/feather-sprite.svg#shopping-cart" />
+                  </svg>
+                </a>
+                <div class="product-price">
+                  <span x-text="rupiah(item.price)"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </section>
+    
     <section id="contact" class="contact">
       <h2><span>Kontak</span> Kami</h2>
       <p>
@@ -144,9 +240,7 @@
         </form>
       </div>
     </section>
-    <!-- Contact Section end -->
 
-    <!-- Footer start -->
     <footer>
       <div class="socials">
         <a href="#"><i data-feather="instagram"></i></a>
@@ -157,7 +251,7 @@
       <div class="links">
         <a href="#home">Home</a>
         <a href="#about">Tentang Kami</a>
-        <a href="#produk">Produk</a>
+        <a href="#shop">Shop</a>
         <a href="#contact">Kontak</a>
       </div>
 
@@ -165,14 +259,41 @@
         <p>Created by <a href="">ridwantaopik</a> | &copy; 2025</p>
       </div>
     </footer>
-    <!-- Footer end -->
 
-    <!-- Feather Icons -->
+    <div class="modal" id="item-detail-modal">
+      <div class="modal-container">
+        <a href="#" class="close-icon"><i data-feather="x"></i></a>
+        <div class="modal-content">
+          <img src="img/katalog/5.jpg" alt="Product 1" />
+          <div class="product-content">
+            <h3>Product 1</h3>
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Pariatur
+              sit placeat itaque voluptatum cupiditate dignissimos modi ad. Quia
+              dolorem laborum illo eveniet ipsam perspiciatis adipisci.
+            </p>
+            <div class="product-stars">
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+            </div>
+            <div class="product-price">
+              IDR 7.500.000 <span>IDR 8.200.000</span>
+            </div>
+            <a href="#"
+              ><i data-feather="shopping-cart"></i> <span>add to cart</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       feather.replace();
     </script>
 
-    <!-- Javascript -->
     <script src="js/script.js"></script>
   </body>
 </html>
